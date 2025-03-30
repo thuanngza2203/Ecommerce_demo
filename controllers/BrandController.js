@@ -2,8 +2,17 @@ import { Sequelize } from "sequelize";
 import db from "../models";
 
 export async function getBrands(req, res) {
+  //get all brand from db
+  const brands = await db.Brand.findAll();
+  //check if brands is empty
+  if (brands.length === 0) {
+    return res.status(404).json({
+      message: "No brands found",
+    });
+  }
   res.status(200).json({
     message: "Get Brands successfully",
+    data: brands,
   });
 }
 
