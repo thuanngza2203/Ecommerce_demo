@@ -30,22 +30,60 @@ export async function getCategoryById(req, res) {
   });
 }
 
-export async function updateCategory(req, res) {
-  res.status(200).json({
-    message: "Update Category successfully",
+export async function insertCategory(req, res) {
+  const newCategory = await db.Category.create(req.body);
+  return res.status(201).json({
+    message: "Insert category successfully",
+    data: newCategory,
   });
 }
 
-export async function insertCategory(req, res) {
-  const category = await db.Category.create(req.body);
-  res.status(201).json({
-    message: "Insert Category successfully",
-    data: category,
+export async function updateCategory(req, res) {
+  const { id } = req.params;
+
+  // Tìm danh mục trong DB
+  const existingCategory = await db.Category.findByPk(id);
+
+  if (!existingCategory) {
+    return res.status(404).json({
+      message: "Category not found",
+    });
+  }
+
+  // Cập nhật với dữ liệu mới, nếu không có thì giữ dữ liệu cũ
+  const updatedData = {
+    name: req.body.name ?? existingCategory.name,
+    image: req.body.image ?? existingCategory.image,
+  };
+
+  await db.Category.update(updatedData, {
+    where: { id },
+  });
+
+  // Lấy danh mục sau khi cập nhật
+  const updatedCategory = await db.Category.findByPk(id);
+
+  return res.status(200).json({
+    message: "Update category successfully",
+    data: updatedCategory,
   });
 }
 
 export async function deleteCategory(req, res) {
-  res.status(200).json({
-    message: "Delete Category successfully",
+  const { id } = req.params;
+
+  // Xóa danh mục
+  const deletedRows = await db.Category.destroy({
+    where: { id },
+  });
+
+  if (deletedRows === 0) {
+    return res.status(404).json({
+      message: "Category not found",
+    });
+  }
+
+  return res.status(200).json({
+    message: "Delete category successfully",
   });
 }
