@@ -56,8 +56,41 @@ export async function getProductById(req, res) {
 }
 
 export async function updateProduct(req, res) {
-  res.status(200).json({
+  const { id } = req.params;
+
+  // Tìm sản phẩm trong DB
+  const existingProduct = await db.Product.findByPk(id);
+
+  if (!existingProduct) {
+    return res.status(404).json({
+      message: "Product not found",
+    });
+  }
+
+  // Cập nhật với dữ liệu mới, nếu không có thì giữ dữ liệu cũ
+  const updatedData = {
+    name: req.body.name ?? existingProduct.name,
+    price: req.body.price ?? existingProduct.price,
+    oldprice: req.body.oldprice ?? existingProduct.oldprice,
+    image: req.body.image ?? existingProduct.image,
+    description: req.body.description ?? existingProduct.description,
+    specification: req.body.specification ?? existingProduct.specification,
+    buyturn: req.body.buyturn ?? existingProduct.buyturn,
+    quantity: req.body.quantity ?? existingProduct.quantity,
+    brand_id: req.body.brand_id ?? existingProduct.brand_id,
+    category_id: req.body.category_id ?? existingProduct.category_id,
+  };
+
+  await db.Product.update(updatedData, {
+    where: { id },
+  });
+
+  // Lấy sản phẩm sau khi cập nhật
+  const updatedProduct = await db.Product.findByPk(id);
+
+  return res.status(200).json({
     message: "Update product successfully",
+    data: updatedProduct,
   });
 }
 
@@ -73,7 +106,18 @@ export async function insertProduct(req, res) {
 }
 
 export async function deleteProduct(req, res) {
-  res.status(200).json({
+  const { id } = req.params;
+  const deletedRows = await db.Product.destroy({
+    where: { id },
+  });
+
+  if (deletedRows === 0) {
+    return res.status(404).json({
+      message: "Product not found",
+    });
+  }
+
+  return res.status(200).json({
     message: "Delete product successfully",
   });
 }
