@@ -6,12 +6,18 @@ import * as OrderController from "./controllers/OrderController";
 import * as OrderDetailController from "./controllers/OrderDetailController";
 import * as BrandController from "./controllers/BrandController";
 import asyncHandle from "./middlewares/asyncHandle";
+import validate from "./middlewares/validate";
+import InsertProductRequest from "./dtos/requests/insertProductRequest";
 export function AppRoute(app) {
   //product api
   // http://localhost:3000/products
   router.get("/products", asyncHandle(ProductController.getProducts));
   router.get("/products/:id", asyncHandle(ProductController.getProductById));
-  router.post("/products", asyncHandle(ProductController.insertProduct));
+  router.post(
+    "/products",
+    validate(InsertProductRequest),
+    asyncHandle(ProductController.insertProduct)
+  );
   router.put("/products/:id", asyncHandle(ProductController.updateProduct));
   router.delete("/products/:id", asyncHandle(ProductController.deleteProduct));
 
