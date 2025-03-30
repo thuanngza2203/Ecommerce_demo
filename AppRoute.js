@@ -8,6 +8,7 @@ import * as BrandController from "./controllers/BrandController";
 import asyncHandle from "./middlewares/asyncHandle";
 import validate from "./middlewares/validate";
 import InsertProductRequest from "./dtos/requests/insertProductRequest";
+import UpdateProductRequest from "./dtos/requests/updateProductRequest";
 export function AppRoute(app) {
   //product api
   // http://localhost:3000/products
@@ -18,7 +19,11 @@ export function AppRoute(app) {
     validate(InsertProductRequest),
     asyncHandle(ProductController.insertProduct)
   );
-  router.put("/products/:id", asyncHandle(ProductController.updateProduct));
+  router.put(
+    "/products/:id",
+    validate(UpdateProductRequest),
+    asyncHandle(ProductController.updateProduct)
+  );
   router.delete("/products/:id", asyncHandle(ProductController.deleteProduct));
 
   // category api
