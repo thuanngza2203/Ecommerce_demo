@@ -3,7 +3,8 @@ const validate = (requestType) => {
     const { error } = requestType.validate(req.body);
     if (error) {
       return res.status(400).json({
-        message: "Validation error",
+        console: error,
+        message: "Validation error!",
         error: error.details[0].message,
       });
     }

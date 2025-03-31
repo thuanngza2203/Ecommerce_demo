@@ -20,7 +20,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
       },
       role: {
         type: Sequelize.INTEGER,
@@ -30,6 +30,7 @@ module.exports = {
       },
       phone: {
         type: Sequelize.INTEGER,
+        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,

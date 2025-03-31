@@ -5,10 +5,13 @@ import * as CategoryController from "./controllers/CategoryController";
 import * as OrderController from "./controllers/OrderController";
 import * as OrderDetailController from "./controllers/OrderDetailController";
 import * as BrandController from "./controllers/BrandController";
+import * as UserController from "./controllers/UserController";
 import asyncHandle from "./middlewares/asyncHandle";
 import validate from "./middlewares/validate";
-import InsertProductRequest from "./dtos/requests/insertProductRequest";
-import UpdateProductRequest from "./dtos/requests/updateProductRequest";
+import InsertProductRequest from "./dtos/requests/product/insertProductRequest";
+import UpdateProductRequest from "./dtos/requests/product/updateProductRequest";
+import InsertOrderRequest from "./dtos/requests/order/insertOrderRequest";
+import InsertUserRequest from "./dtos/requests/user/InsertUserRequest";
 export function AppRoute(app) {
   //product api
   // http://localhost:3000/products
@@ -39,10 +42,25 @@ export function AppRoute(app) {
     asyncHandle(CategoryController.deleteCategory)
   );
 
+  // User API
+  router.get("/users", asyncHandle(UserController.getUsers));
+  router.get("/users/:id", asyncHandle(UserController.getUserById));
+  router.post(
+    "/users",
+    validate(InsertUserRequest),
+    asyncHandle(UserController.insertUser)
+  );
+  router.put("/users/:id", asyncHandle(UserController.updateUser));
+  router.delete("/users/:id", asyncHandle(UserController.deleteUser));
+
   // Order API
   router.get("/orders", asyncHandle(OrderController.getOrders));
   router.get("/orders/:id", asyncHandle(OrderController.getOrderById));
-  router.post("/orders", asyncHandle(OrderController.insertOrder));
+  router.post(
+    "/orders",
+    validate(InsertOrderRequest),
+    asyncHandle(OrderController.insertOrder)
+  );
   router.put("/orders/:id", asyncHandle(OrderController.updateOrder));
   router.delete("/orders/:id", asyncHandle(OrderController.deleteOrder));
 
