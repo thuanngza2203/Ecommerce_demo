@@ -7,6 +7,7 @@ import * as OrderDetailController from "./controllers/OrderDetailController";
 import * as BrandController from "./controllers/BrandController";
 import * as UserController from "./controllers/UserController";
 import * as NewsController from "./controllers/NewsController";
+import * as ImageController from "./controllers/imageController";
 import asyncHandle from "./middlewares/asyncHandle";
 import validate from "./middlewares/validate";
 import InsertProductRequest from "./dtos/requests/product/insertProductRequest";
@@ -100,6 +101,9 @@ export function AppRoute(app) {
   router.post("/news", asyncHandle(NewsController.insertNews));
   router.put("/news/:id", asyncHandle(NewsController.updateNews));
   router.delete("/news/:id", asyncHandle(NewsController.deleteNews));
+
+  // Image upload API
+  router.post("/upload-images", asyncHandle(ImageController.uploadImages));
 
   app.use("/api/", router);
 }
