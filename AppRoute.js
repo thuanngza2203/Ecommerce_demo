@@ -6,7 +6,7 @@ import * as OrderController from "./controllers/OrderController";
 import * as OrderDetailController from "./controllers/OrderDetailController";
 import * as BrandController from "./controllers/BrandController";
 import * as UserController from "./controllers/UserController";
-import * as NewController from "./controllers/NewController";
+import * as NewsController from "./controllers/NewsController";
 import asyncHandle from "./middlewares/asyncHandle";
 import validate from "./middlewares/validate";
 import InsertProductRequest from "./dtos/requests/product/insertProductRequest";
@@ -95,11 +95,11 @@ export function AppRoute(app) {
   router.delete("/brands/:id", asyncHandle(BrandController.deleteBrand));
 
   //news api
-  router.get("/news", asyncHandle(NewController.getNews));
-  router.get("/news/:id", asyncHandle(NewController.getNewsById));
-  router.post("/news", asyncHandle(NewController.insertNews));
-  router.put("/news/:id", asyncHandle(NewController.updateNews));
-  router.delete("/news/:id", asyncHandle(NewController.deleteNews));
+  router.get("/news", asyncHandle(NewsController.getNews));
+  router.get("/news/:id", asyncHandle(NewsController.getNewsById));
+  router.post("/news", asyncHandle(NewsController.insertNews));
+  router.put("/news/:id", asyncHandle(NewsController.updateNews));
+  router.delete("/news/:id", asyncHandle(NewsController.deleteNews));
 
   app.use("/api/", router);
 }
