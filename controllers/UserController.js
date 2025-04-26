@@ -104,7 +104,8 @@ export async function registerUser(req, res) {
 
   return res.status(201).json({
     message: "Register successfully",
-    data: new ResponseUser(userData),
+    //
+    // data: new ResponseUser(userData),
   });
 }
 
@@ -123,4 +124,63 @@ export async function deleteUser(req, res) {
   return res.status(200).json({
     message: "Delete user successfully",
   });
+}
+
+export async function login(req, res) {
+  const { email, phone, password } = req.body;
+
+  // Ensure at least email or phone is provided
+  if (!email && !phone) {
+    return res.status(400).json({
+      message: "Either email or phone number is required",
+    });
+  }
+
+  // Ensure password is provided
+  if (!password) {
+    return res.status(400).json({
+      message: "Password is required",
+    });
+  }
+
+  // Build query conditions
+  const whereConditions = {};
+  if (email) {
+    whereConditions.email = email;
+  } else if (phone) {
+    whereConditions.phone = phone;
+  }
+
+  // Find the user
+  const user = await db.User.findOne({
+    where: whereConditions,
+  });
+
+  // Check if user exists
+  if (!user) {
+    return res.status(401).json({
+      message: "Invalid credentials",
+    });
+  }
+
+  // Verify password
+  try {
+    const validPassword = await argon2.verify(user.password, password);
+    if (!validPassword) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    // Login successful
+    return res.status(200).json({
+      message: "Login successful",
+      //data: new ResponseUser(user),
+    });
+  } catch (error) {
+    console.error("Password verification error:", error);
+    return res.status(500).json({
+      message: "An error occurred during login",
+    });
+  }
 }

@@ -54,6 +54,7 @@ export function AppRoute(app) {
   );
   router.put("/users/:id", asyncHandle(UserController.updateUser));
   router.delete("/users/:id", asyncHandle(UserController.deleteUser));
+  router.post("/users/login", asyncHandle(UserController.login));
 
   // Order API
   router.get("/orders", asyncHandle(OrderController.getOrders));

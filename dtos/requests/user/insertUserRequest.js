@@ -13,10 +13,10 @@ class InsertUserRequest {
 
   static validate(data) {
     const schema = Joi.object({
-      email: Joi.string().email().required(),
-      //password: Joi.string().required(),
+      email: Joi.string().email().optional(),
+      password: Joi.string().required(),
       name: Joi.string().required(),
-      role: Joi.number().integer().min(UserRole.USER).required(),
+      // role: Joi.number().integer().min(UserRole.USER).required(),
       avatar: Joi.string().optional().allow(""),
       phone: Joi.number().optional(),
     });
