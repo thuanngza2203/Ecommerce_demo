@@ -50,7 +50,7 @@ export function AppRoute(app) {
   router.post(
     "/users",
     validate(InsertUserRequest),
-    asyncHandle(UserController.insertUser)
+    asyncHandle(UserController.registerUser)
   );
   router.put("/users/:id", asyncHandle(UserController.updateUser));
   router.delete("/users/:id", asyncHandle(UserController.deleteUser));

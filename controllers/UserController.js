@@ -56,26 +56,54 @@ export async function updateUser(req, res) {
 }
 
 //insert user
-export async function insertUser(req, res) {
-  // Check if user with the same email already exists
+export async function registerUser(req, res) {
+  const { email, phone, password } = req.body;
+
+  // Ensure at least email or phone is provided
+  if (!email && !phone) {
+    return res.status(400).json({
+      message: "Either email or phone number is required",
+    });
+  }
+
+  // Check if user with the same email or phone already exists
+  const whereConditions = [];
+  if (email) {
+    whereConditions.push({ email });
+  }
+  if (phone) {
+    whereConditions.push({ phone });
+  }
+
   const existingUser = await db.User.findOne({
-    where: { email: req.body.email },
+    where: {
+      [Sequelize.Op.or]: whereConditions,
+    },
   });
 
   if (existingUser) {
+    const conflictField =
+      existingUser.email === email ? "Email" : "Phone number";
     return res.status(409).json({
-      message: "Email already exists",
+      message: `${conflictField} already exists`,
     });
   }
-  const hashedPassword = await argon2.hash(req.body.password);
+
+  // Ensure password is provided
+  if (!password) {
+    return res.status(400).json({
+      message: "Password is required",
+    });
+  }
+
+  const hashedPassword = await argon2.hash(password);
   const userData = await db.User.create({
     ...req.body,
     password: hashedPassword,
   });
-  //const newUser = await db.User.create(req.body);
+
   return res.status(201).json({
-    console: userData,
-    message: "Insert user successfully",
+    message: "Register successfully",
     data: new ResponseUser(userData),
   });
 }
